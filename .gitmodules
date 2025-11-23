@@ -16,3 +16,15 @@
 [submodule "rmcs_ws/src/livox_ros_driver2"]
 	path = rmcs_ws/src/livox_ros_driver2
 	url = https://github.com/Alliance-Algorithm/livox_ros_driver2.git
+[submodule "rmcs_ws/thirdparty/micro-xrce-dds-agent"]
+	path = rmcs_ws/thirdparty/micro-xrce-dds-agent
+	url = https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
+[submodule "rmcs_ws/thirdparty/realsense"]
+	path = rmcs_ws/thirdparty/realsense
+	url = https://github.com/IntelRealSense/realsense-ros.git
+[submodule "rmcs_ws/src/px4_msgs"]
+	path = rmcs_ws/src/px4_msgs
+	url = https://github.com/PX4/px4_msgs.git
+[submodule "rmcs_ws/px4_ros_com"]
+	path = rmcs_ws/px4_ros_com
+	url = https://github.com/PX4/px4_ros_com.git
