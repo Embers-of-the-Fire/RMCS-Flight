@@ -28,3 +28,6 @@
 [submodule "rmcs_ws/px4_ros_com"]
 	path = rmcs_ws/px4_ros_com
 	url = https://github.com/PX4/px4_ros_com.git
+[submodule "rmcs_ws/src/px4-ros2-interface-lib"]
+	path = rmcs_ws/src/px4-ros2-interface-lib
+	url = https://github.com/Auterion/px4-ros2-interface-lib

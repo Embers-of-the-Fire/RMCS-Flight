@@ -20,6 +20,9 @@
   <depend>rmcs_executor</depend>
   <depend>rmcs_description</depend>
   <depend>rmcs_slam</depend>
+  <depend>nav_msgs</depend>
+  <depend>px4_msgs</depend>
+  <depend>px4_ros2_cpp</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
