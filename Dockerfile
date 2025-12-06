@@ -38,9 +38,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libomp-dev \
     libomp-22-dev \
     dotnet-sdk-8.0 \
+    ros-$ROS_DISTRO-cv-bridge ros-$ROS_DISTRO-diagnostic-updater \
     ros-$ROS_DISTRO-pcl-ros ros-$ROS_DISTRO-pcl-conversions ros-$ROS_DISTRO-pcl-msgs && \
     apt-get autoremove -y && apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/*
+
+# Install librealsense
+RUN sudo mkdir -p /etc/apt/keyrings && \
+    curl -sSf https://librealsense.realsenseai.com/Debian/librealsense.pgp \
+        | sudo tee /etc/apt/keyrings/librealsense.pgp > /dev/null && \
+    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | \
+    sudo tee /etc/apt/sources.list.d/librealsense.list && \
+    sudo apt-get update && \
+    sudo apt-get install -y --no-install-recommends \
+        librealsense2-utils \
+        librealsense2-dev
 
 # Install openvino runtime
 RUN wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB && \
