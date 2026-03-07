@@ -29,7 +29,28 @@ include_directories(${PROJECT_SOURCE_DIR}/librmcs)
 
 include_directories(SYSTEM "/usr/include/libusb-1.0")
 
-target_link_libraries(${PROJECT_NAME} -lusb-1.0)
+# ---- Odin LiDAR driver (thirdparty, no ROS layer) ----
+set(ODIN_DRIVER_DIR "${PROJECT_SOURCE_DIR}/../../thirdparty/odin_ros_driver")
+
+include_directories(SYSTEM "${ODIN_DRIVER_DIR}/include")
+
+execute_process(
+    COMMAND uname -m
+    OUTPUT_VARIABLE _HOST_ARCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(_HOST_ARCH MATCHES "arm|aarch64")
+    set(_ODIN_LIB "${ODIN_DRIVER_DIR}/lib/liblydHostApi_arm.a")
+else()
+    set(_ODIN_LIB "${ODIN_DRIVER_DIR}/lib/liblydHostApi_amd.a")
+endif()
+
+target_link_libraries(${PROJECT_NAME}
+    -lusb-1.0
+    ${_ODIN_LIB}
+    pthread
+    ${CMAKE_DL_LIBS}
+)
 
 pluginlib_export_plugin_description_file(rmcs_executor plugins.xml)
 
