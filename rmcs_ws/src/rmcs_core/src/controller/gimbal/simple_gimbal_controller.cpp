@@ -22,8 +22,9 @@ public:
               rclcpp::NodeOptions{}.automatically_declare_parameters_from_overrides(true))
         , two_axis_gimbal_solver(
               *this, get_parameter("upper_limit").as_double(),
-              get_parameter("lower_limit").as_double(),get_parameter("yaw_upper_limit").as_double()
-            ,get_parameter("yaw_lower_limit").as_double()) {
+              get_parameter("lower_limit").as_double(),
+              get_parameter("yaw_upper_limit").as_double(),
+              get_parameter("yaw_lower_limit").as_double()) {
 
         register_input("/remote/joystick/left", joystick_left_);
         register_input("/remote/switch/right", switch_right_);
@@ -41,6 +42,9 @@ public:
         auto angle_error = calculate_angle_error();
         *yaw_angle_error_ = angle_error.yaw_angle_error;
         *pitch_angle_error_ = angle_error.pitch_angle_error;
+
+        // RCLCPP_INFO(get_logger(), "[gimbal calibration] New pitch offset: %f",
+        // *pitch_angle_error_);
     }
 
     TwoAxisGimbalSolver::AngleError calculate_angle_error() {
@@ -69,6 +73,9 @@ public:
             joystick_sensitivity * joystick_left_->y() + mouse_sensitivity * mouse_velocity_->y();
         double pitch_shift =
             -joystick_sensitivity * joystick_left_->x() - mouse_sensitivity * mouse_velocity_->x();
+
+        // RCLCPP_INFO(get_logger(), "[gimbal calibration] New pitch offset: %f",
+        // joystick_left_->x());
 
         return two_axis_gimbal_solver.update(
             TwoAxisGimbalSolver::SetControlShift(yaw_shift, pitch_shift));

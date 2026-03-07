@@ -49,7 +49,7 @@ public:
         PitchLink::DirectionVector update(TwoAxisGimbalSolver& super) const override {
             auto odom_dir = fast_tf::cast<OdomImu>(
                 PitchLink::DirectionVector{Eigen::Vector3d::UnitX()}, *super.tf_);
-            if (odom_dir->x() == 0 || odom_dir->y() == 0)
+            if (odom_dir->x() == 0 && odom_dir->y() == 0)
                 return {};
 
             super.control_enabled_ = true;
@@ -141,7 +141,7 @@ private:
 
         auto yaw_axis = fast_tf::cast<PitchLink>(yaw_axis_filtered_, *tf_);
         pitch = {yaw_axis->z(), yaw_axis->x()};
-        pitch.normalized();
+        pitch.normalize();
 
         const auto& [x, y, z] = *dir;
         dir_yaw_link = {x * pitch.x() - z * pitch.y(), y, x * pitch.y() + z * pitch.x()};
@@ -181,9 +181,11 @@ private:
             xz_projection /= xz_norm;
 
         if (yaw_y > yaw_upper_limit_.y())
-            *control_direction << yaw_upper_limit_.x() * xz_projection.x(), yaw_upper_limit_.x(), yaw_upper_limit_.x() * xz_projection.y();
+            *control_direction << yaw_upper_limit_.x() * xz_projection.x(),
+                yaw_upper_limit_.y(), yaw_upper_limit_.x() * xz_projection.y();
         else if (yaw_y < yaw_lower_limit_.y())
-            *control_direction << yaw_lower_limit_.x() * xz_projection.x(), yaw_lower_limit_.x(), yaw_lower_limit_.x() * xz_projection.y();
+            *control_direction << yaw_lower_limit_.x() * xz_projection.x(),
+                yaw_lower_limit_.y(), yaw_lower_limit_.x() * xz_projection.y();
          
     }
 

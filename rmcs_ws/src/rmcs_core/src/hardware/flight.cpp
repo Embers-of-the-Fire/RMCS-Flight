@@ -44,8 +44,10 @@ public:
         , transmit_buffer_(*this, 32)
         , event_thread_([this]() { handle_events(); }) {
         gimbal_yaw_motor_.configure(
-            device::LkMotor::Config{device::LkMotor::Type::MHF7015}.set_reversed().set_encoder_zero_point(
-                static_cast<int>(get_parameter("yaw_motor_zero_point").as_int())));
+            device::LkMotor::Config{device::LkMotor::Type::MHF7015}
+                .set_reversed()
+                .set_encoder_zero_point(
+                    static_cast<int>(get_parameter("yaw_motor_zero_point").as_int())));
         gimbal_pitch_motor_.configure(
             device::LkMotor::Config{device::LkMotor::Type::MG4010E_I10}.set_encoder_zero_point(
                 static_cast<int>(get_parameter("pitch_motor_zero_point").as_int())));
@@ -113,20 +115,26 @@ public:
         update_motors();
         update_imu();
         dr16_.update_status();
-
     }
 
     void command_update() {
-        uint16_t can_commands[4];
+        // uint16_t can_commands[4];
 
         transmit_buffer_.add_can1_transmission(0x141, gimbal_yaw_motor_.generate_torque_command());
-        transmit_buffer_.add_can2_transmission(0x144, gimbal_pitch_motor_.generate_command());
+        transmit_buffer_.add_can2_transmission(0x141, gimbal_pitch_motor_.generate_command());
 
-        can_commands[0] = gimbal_bullet_feeder_.generate_command();
-        can_commands[1] = gimbal_right_friction_.generate_command();
-        can_commands[2] = gimbal_left_friction_.generate_command();
-        can_commands[3] = 0;
-        transmit_buffer_.add_can2_transmission(0x200, std::bit_cast<uint64_t>(can_commands));
+        // RCLCPP_INFO(
+        //     logger_, "[gimbal calibration] New yaw offset: %ld",
+        //     gimbal_yaw_motor_.calibrate_zero_point());
+        // RCLCPP_INFO(
+        //     logger_, "[gimbal calibration] New pitch offset: %ld",
+        //     gimbal_pitch_motor_.calibrate_zero_point());
+
+        // can_commands[0] = gimbal_bullet_feeder_.generate_command();
+        // can_commands[1] = gimbal_right_friction_.generate_command();
+        // can_commands[2] = gimbal_left_friction_.generate_command();
+        // can_commands[3] = 0;
+        // transmit_buffer_.add_can2_transmission(0x200, std::bit_cast<uint64_t>(can_commands));
 
         transmit_buffer_.trigger_transmission();
     }
@@ -186,7 +194,7 @@ protected:
             gimbal_left_friction_.store_status(can_data);
         } else if (can_id == 0x202) {
             gimbal_right_friction_.store_status(can_data);
-        } else if (can_id == 0x144) {
+        } else if (can_id == 0x141) {
             gimbal_pitch_motor_.store_status(can_data);
         }
     }
