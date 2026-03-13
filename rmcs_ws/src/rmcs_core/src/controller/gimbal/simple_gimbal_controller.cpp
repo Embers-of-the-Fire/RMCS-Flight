@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <limits>
 
 #include <rclcpp/node.hpp>
@@ -41,7 +42,11 @@ public:
     void update() override {
         auto angle_error = calculate_angle_error();
         *yaw_angle_error_ = angle_error.yaw_angle_error;
-        *pitch_angle_error_ = angle_error.pitch_angle_error;
+        if (abs(angle_error.pitch_angle_error) < 8e-3) {
+            *pitch_angle_error_ = 0;
+        } else {
+            *pitch_angle_error_ = angle_error.pitch_angle_error;
+        }
 
         // RCLCPP_INFO(get_logger(), "[gimbal calibration] New pitch offset: %f",
         // *pitch_angle_error_);
